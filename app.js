@@ -10,7 +10,6 @@ const fetchingQuestions = async function() {
         let result = await fetch('https://opentdb.com/api.php?amount=10&category=18&difficulty=easy')
         let data = await result.json()
         let questions = data.results
-        console.log(questions)
         // loop through questions and get values
         questions = questions.map(item => {
             const question = item.question
@@ -18,7 +17,7 @@ const fetchingQuestions = async function() {
             const difficulty = item.difficulty
             const incorrectAnswers = item.incorrect_answers
             const correctAnswer = item.correct_answer
-
+            
             return {question, category, difficulty, incorrectAnswers, correctAnswer}
         })
 
@@ -36,20 +35,24 @@ const displayQuestions = function(questions) {
 
     let htmlForm = ''
     let formDOM = document.querySelector(".formDOM")
-
+   
     questions.forEach(questionsArr => {
+        
+        let allAnswers = questionsArr.incorrectAnswers
+        
         htmlForm += `
         <form class="border p-3">
             <label class="fw-bolder">${questionsArr.question}</label>
             <div class="form-check mt-3">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
-                  Default checkbox
+                    ${allAnswers}
                 </label>
               </div>
         </form>
         `
     })
-    formDOM.innerHTML = htmlForm
 
+    
+    formDOM.innerHTML = htmlForm
 }
