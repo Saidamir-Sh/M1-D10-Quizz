@@ -1,22 +1,55 @@
 window.onload = function () {
+
 fetchingQuestions()
-givenQuestions(questions)
 }
 
 // Fetching questions and answers from given API
-const fetchingQuestions = function() {
+const fetchingQuestions = async function() { 
+    try {
 
-    let questions
+        let result = await fetch('https://opentdb.com/api.php?amount=10&category=18&difficulty=easy')
+        let data = await result.json()
+        let questions = data.results
+        console.log(questions)
+        // loop through questions and get values
+        questions = questions.map(item => {
+            const question = item.question
+            const category = item.category
+            const difficulty = item.difficulty
+            const incorrectAnswers = item.incorrect_answers
+            const correctAnswer = item.correct_answer
 
-    fetch('https://opentdb.com/api.php?amount=10&category=18&difficulty=easy')
-    .then(response => response.json())
-    .then(data => questions = data.results)
-    .then(questions => console.log(questions))
+            return {question, category, difficulty, incorrectAnswers, correctAnswer}
+        })
 
-    displayQuestions(questions)
+        // call a display function when data is ready
+        displayQuestions(questions)
+        return questions
+
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-// Displaying fetched questions in html form and creating DOM nodes
-const displayQuestions = function(givenQuestions) {
-    
+// Displaying questions in DOM 
+const displayQuestions = function(questions) {
+
+    let htmlForm = ''
+    let formDOM = document.querySelector(".formDOM")
+
+    questions.forEach(questionsArr => {
+        htmlForm += `
+        <form class="border p-3">
+            <label class="fw-bolder">${questionsArr.question}</label>
+            <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  Default checkbox
+                </label>
+              </div>
+        </form>
+        `
+    })
+    formDOM.innerHTML = htmlForm
+
 }
